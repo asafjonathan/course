@@ -1,4 +1,4 @@
-##Technologies
+## Technologies
     * Ember 
     * RabbitMQ
     * Golang
@@ -6,15 +6,15 @@
     * Postgres
     * css tailwins
 
-##Description
+## Description
 This project is for learning purpose
-##GoService
+## GoService
    POST http://localhost:3001/products/like/{{id}}
-##RailsService
+## RailsService
     GET http://localhost:3000/products
-##Client
+## Client
     http://localhost:4200 => nav to products on nav bar
-##Installation
+## Installation
 docker-compose up
-##HLD
-![alt text](![alt text](https://github.com/asafjonathan/course/blob/main/hld.png?raw=true))
+## HLD
+![alt text](![alt text](https://github.com/asafjonathan/course/blob/main/hld.png?raw=true)
