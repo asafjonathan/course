@@ -1,0 +1,94 @@
+version: '3.1'
+services:
+
+  ms-client-ember:
+    build: ./client
+    volumes:
+      - .bash_history:/root/.bash_history
+      - ./client:/myapp
+    tmpfs:
+      - /myapp/tmp
+    ports:
+      - "4200:4200"
+      - "7020:7020"
+      - "7357:7357"    
+  
+  ms-go-server:
+    build: ./go-server
+    ports:
+      - '3001:3001'
+    depends_on:
+      - ms-db
+      - ms-rabbitmq
+    links:
+      - ms-db
+      - ms-rabbitmq
+    environment:
+      PORT: ":3001"
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "application"
+      RABBIT_CONNECTION_STRING: "amqp://guest:guest@ms-rabbitmq:5672"
+    volumes:
+      - ./go-server:/app
+
+  ms-ruby-server:
+    build: ./ruby-server
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    environment:
+      DATABASE_URL: postgres://root:root@ms-db/application
+      RABBIT_CONNECTION_STRING: "amqp://guest:guest@ms-rabbitmq:5672"
+    volumes:
+      - ./ruby-server:/myapp
+      - bundle:/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ms-db
+
+  ms-rails-jobs:
+      build: ./ruby-server
+      command: bundle exec rake jobs:work
+      volumes:
+        - ./ruby-server:/myapp
+      depends_on:
+        - ms-rabbitmq
+        - ms-ruby-server
+      links:
+        - ms-ruby-server
+      
+
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+
+  ms-db:
+    container_name: pg_container
+    image: postgres
+    build: ./database
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./driver/postgres:/docker-entrypoint-initdb.d
+      - pg_data:/var/lib/postgresql/data/
+
+  ms-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'ms-rabbitmq'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+volumes:
+  pg_data:
+  bundle:
