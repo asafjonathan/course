@@ -17,4 +17,4 @@ This project is for learning purpose
 ##Installation
 docker-compose up
 ##HLD
-![alt text](![alt text](https://github.com/asafjonathan/curse/blob/main/hld.png?raw=true))
+![alt text](![alt text](https://github.com/asafjonathan/course/blob/main/hld.png?raw=true))
