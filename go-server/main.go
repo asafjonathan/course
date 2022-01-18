@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"tailor/cmd"
@@ -12,6 +11,5 @@ import (
 func main() {
 	port := os.Getenv("PORT")
 	rotes := cmd.Route()
-	fmt.Println("ssss")
 	http.ListenAndServe(port, rotes)
 }
