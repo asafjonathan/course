@@ -51,7 +51,7 @@ services:
       - 'ms-db'
       - 'redis'
     build: ./ruby-server
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -C ./config/sidekiq.yml
     working_dir: /myapp
     volumes:
       - ./ruby-server:/myapp
