@@ -17,6 +17,10 @@ func ResponseError(w http.ResponseWriter, message string, httpStatusCode int) {
 	resp["message"] = message
 	json.NewEncoder(w).Encode(resp)
 }
+func ResponseErrors(w http.ResponseWriter, errors interface{}, httpStatusCode int) {
+	w.WriteHeader(httpStatusCode)
+	json.NewEncoder(w).Encode(errors)
+}
 func ResponseSuccess(w http.ResponseWriter, data interface{}, key string) {
 	w.WriteHeader(200)
 	resp := make(map[string]interface{})
